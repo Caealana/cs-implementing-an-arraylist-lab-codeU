@@ -59,9 +59,24 @@ public class MyArrayList<E> implements List<E> {
 
 	@Override
 	public void add(int index, E element) {
+		//is an overloaded version of add that takes an index and stores the new value at the given index
+		//, shifting the other elements to make room, if necessary.
 		if (index < 0 || index > size) {
 			throw new IndexOutOfBoundsException();
 		}
+		if (size >= array.length) {
+			// make a bigger array and copy over the elements
+			E[] bigger = (E[]) new Object[array.length * 2];
+			System.arraycopy(array, 0, bigger, 0, array.length);
+			array = bigger;
+		} 
+		int numberOfShifts = size - index;
+		for(int i = size - 1; i >= index; i--){
+			array[i + 1] = array[i];
+
+		}
+		array[index] = element;
+		size++;
 		// TODO: fill in the rest of this method
 	}
 
@@ -111,8 +126,14 @@ public class MyArrayList<E> implements List<E> {
 
 	@Override
 	public int indexOf(Object target) {
-		// TODO: fill in this method
-		return 0;
+		// Returns the index of the first occurrence of the specified element in this list, or -1 if this list does not contain the element.
+		//More formally, returns the lowest index i such that (o==null ? get(i)==null : o.equals(get(i))), or -1 if there is no such index.
+		for(int i = 0; i < size; i++){
+			if(equals(target, array[i])){
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	/** Checks whether an element of the array is the target.
@@ -182,8 +203,18 @@ public class MyArrayList<E> implements List<E> {
 
 	@Override
 	public E remove(int index) {
-		// TODO: fill in this method.
-		return null;
+		// Removes the element at the specified position in this list (optional operation).
+		// Shifts any subsequent elements to the left (subtracts one from their indices). Returns the element that was removed from the list.
+
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		E original = array[index];
+		for(int i = index + 1; i < size; i ++){
+			array[i - 1] = array[i];
+		}
+		size--;
+		return original;
 	}
 
 	@Override
@@ -202,8 +233,12 @@ public class MyArrayList<E> implements List<E> {
 
 	@Override
 	public E set(int index, E element) {
-		// TODO: fill in this method.
-		return null;
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		E original = array[index]; //store original value from index
+		array[index] = element; //set given index to new element
+		return original; //return the original value of the given index
 	}
 
 	@Override
